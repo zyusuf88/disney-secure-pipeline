@@ -55,7 +55,7 @@ jobs:
         ECR_REPOSITORY: ${{ github.event.inputs.ecr_repository }}
         IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -f app/dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         echo "Built image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
         # Save image to a tar file
