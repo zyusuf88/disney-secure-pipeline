@@ -1,0 +1,115 @@
+<!-- 
+    This template extends the base.html and represents a Single Character Detail Page of the website.
+    
+    The 'content' block includes an image of the character, character's name, and if user is authenticated, an option to favorite or unfavorite the character.
+    
+    It also displays information about films, TV shows, video games, and park attractions the character is associated with. It also includes a button to go back to the Characters page.
+-->
+
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Character details container -->
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center character-info-container p-3">
+                    <!-- Character image and name -->
+                    <img src="{{ data.imageUrl }}" alt="{{ data.name }}" class="character-image rounded">
+                    <h2 class="mt-4 character-name">{{ data.name }}</h2>
+                    <!-- Favorite character option for authenticated users -->
+                    {% if current_user.is_authenticated %}
+                        <input type="hidden" id="favorite-characters" value="{{ favorite_characters }}">
+                        <button id="favButton" type="button" class="btn btn-link text-danger p-0" data-url="{{ url_for('favorite_character', character_id=data._id) }}">
+                            <i id="favorite-icon" class="{{ 'fas' if is_favorite else 'far' }} fa-heart"></i>
+                        </button>  
+                    {% endif %}                                 
+                </div>
+            </div>
+        </div>
+
+    <!-- Information about films, TV shows, video games, and park attractions -->
+    <div class="row mt-4">
+        <div class="col-md-6 col-lg-6 mb-3">
+            <div class="card mx-md-0 mx-2">
+                <div class="card-header text-white" style="background-color: #0275d8;">Films</div>
+                <div class="card-body">
+                    <p class="card-text">{{ data.films|join(', ') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6 mb-3">
+            <div class="card mx-md-0 mx-2">
+                <div class="card-header text-white" style="background-color: #5bc0de;">TV Shows</div>
+                <div class="card-body">
+                    <p class="card-text">{{ data.tvShows|join(', ') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6 col-lg-6 mb-3">
+            <div class="card mx-md-0 mx-2">
+                <div class="card-header text-white" style="background-color: #5cb85c;">Video Games</div>
+                <div class="card-body">
+                    <p class="card-text">{{ data.videoGames|join(', ') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6 mb-3">
+            <div class="card mx-md-0 mx-2">
+                <div class="card-header text-white" style="background-color: #f0ad4e;">Park Attractions</div>
+                <div class="card-body">
+                    <p class="card-text">{{ data.parkAttractions|join(', ') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    {% if current_user.is_authenticated %}
+        <script>
+            window.onload = function() {
+                var favorite_characters = document.getElementById('favorite-characters').value.split(",");
+                var character_id = "{{data._id}}";
+                if (favorite_characters.includes(character_id)) {
+                    // Update the heart icon to be filled in
+                    document.getElementById('favorite-icon').classList.add('fas');
+                    document.getElementById('favorite-icon').classList.remove('far');
+                } else {
+                    // Update the heart icon to be empty
+                    document.getElementById('favorite-icon').classList.remove('fas');
+                    document.getElementById('favorite-icon').classList.add('far');
+                }
+            };
+        </script>
+    {% endif %}
+
+    <!-- JavaScript for favoriting/unfavoriting a character -->
+    {% if current_user.is_authenticated %}
+    <script>
+        document.getElementById('favButton').onclick = function() {
+            var url = this.getAttribute('data-url');
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': "{{ form.csrf_token._value() }}"  // get the CSRF token from the form
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const heart = document.getElementById('favorite-icon');
+                if (data.status === 'favorited') {
+                    heart.classList.remove('far');
+                    heart.classList.add('fas');
+                } else {
+                    heart.classList.remove('fas');
+                    heart.classList.add('far');
+                }
+            });
+        }
+    </script>
+    {% endif %}
+{% endblock %}
