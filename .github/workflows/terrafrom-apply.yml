@@ -63,7 +63,7 @@ jobs:
       - name: Select or Create Workspace
         env:
           ENV_NAME: ${{ github.event.inputs.env }}
-        run: terraform workspace select $ENV_NAME || terraform workspace new $ENV_NAME
+        run: terraform workspace select -or-create=true "$ENV_NAME"
 
       - name: Download Plan from S3
         env:
