@@ -46,7 +46,6 @@ backend.hcl
 tsconfig.dev.json
 # Local .terraform directories
 **/.terraform/*
-.terraform.lock.hcl
 # .tfstate files
 *.tfstate
 *.tfstate.*

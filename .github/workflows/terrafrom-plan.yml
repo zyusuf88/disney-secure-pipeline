@@ -86,7 +86,7 @@ jobs:
         run: tflint --init
 
       - name: Run TFLint
-        run: tflint --recursive --format compact
+        run: tflint --config ../.tflint.hcl --recursive --format compact --minimum-failure-severity=error
 
       - name: Terraform Plan
         env:
