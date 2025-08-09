@@ -8,7 +8,7 @@ db = SQLAlchemy()
 class User(db.Model):
     """User model."""
 
-    __tablename__ = 'users' 
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -20,7 +20,7 @@ class User(db.Model):
     def is_authenticated(self):
         return True
 
-    def is_active(self):  
+    def is_active(self):
         return True
 
     def is_anonymous(self):
@@ -31,7 +31,7 @@ class User(db.Model):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
-        
+
     @classmethod
     def register(cls, username, password, email):
         """Register a user, hashing their password."""
@@ -78,7 +78,7 @@ class FavoriteCharacter(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     added_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     name = db.Column(db.String, nullable=False)
-    image_url = db.Column(db.String, nullable=True) 
+    image_url = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         return f"FavoriteCharacter('{self.name}','{self.character_id}', '{self.user_id}')"

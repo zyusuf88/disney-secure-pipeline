@@ -18,7 +18,7 @@ class BasicTests(TestCase):
 
     def setUp(self):
         self.app = app.test_client()
-        self.app.testing = True 
+        self.app.testing = True
 
         with app.app_context():
             db.create_all()
@@ -70,7 +70,3 @@ class BasicTests(TestCase):
             mocked_get.return_value.json.return_value = {'data': []}
             response = self.app.get('/search?query=test', follow_redirects=True)
             self.assertEqual(response.status_code, 200)
-
-  
-
-    

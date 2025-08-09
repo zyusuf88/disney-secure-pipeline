@@ -32,7 +32,7 @@
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
               {% endif %}
             </div>
-    
+
             <div class="dark-mode-toggle d-flex ms-auto me-3">
               <button class="dark-mode-button" id="toggleDarkMode" style="background: none; border: none;">
                 <i class="fas fa-crown" style="color: black;"></i>
@@ -49,16 +49,16 @@
             </div>
           </form>
       </div>
-    </nav>    
-    
+    </nav>
+
     <div class="content-wrapper">
       <div class="container py-3 mt-3">
           <div class="page-content">
               {% block content %}{% endblock %}
           </div>
       </div>
-    </div>    
-    
+    </div>
+
     <footer class="bg-white mt-5">
       <div class="container text-center mt-3">
           <p>Application data sourced from the Disney API</p>
@@ -85,7 +85,7 @@
       var csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
   </script>
 
-    
+
     <!-- Dark mode or Light mode -->
     <script>
       const toggleButton = document.getElementById('toggleDarkMode');
@@ -120,5 +120,3 @@
     </script>
   </body>
 </html>
-
-

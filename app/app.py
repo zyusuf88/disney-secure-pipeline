@@ -19,7 +19,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'topsecret') 
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'topsecret')
 
 bcrypt = Bcrypt(app)
 
@@ -80,13 +80,13 @@ def user_profile(username):
 
     return render_template("user_profile.html", edit_form=edit_form, user=user, favorite_characters=favorite_characters, form=form)
 
-# Delete user route 
+# Delete user route
 @app.route("/users/delete/<string:username>", methods=["POST"])
 def delete_user(username):
     # Ensure the current user is authenticated and the username matches
     if not current_user.is_authenticated or current_user.username != username:
         abort(403)
-    
+
     user = User.query.filter_by(username=username).first()
     if user is None:
         abort(404)
@@ -94,7 +94,7 @@ def delete_user(username):
     # Deleting favorite characters of the user before deleting the user
     for character in user.favorite_characters:
         db.session.delete(character)
-        
+
     db.session.delete(user)
     db.session.commit()
     logout_user()
@@ -203,7 +203,7 @@ def single_character(character_id):
     else:
         favorite_characters = []
         is_favorite = False
-    
+
     return render_template("character.html", data=data["data"], form=form, is_favorite=is_favorite, favorite_characters=",".join(favorite_characters))
 
 
@@ -256,7 +256,7 @@ def search_characters():
     query = request.args.get('query')
     if not query:
         return redirect(url_for('index'))
-    
+
     query_tokens = query.split(' ')
     characters = []
 
@@ -275,28 +275,28 @@ def search_characters():
             response = requests.get(url)
             data = response.json()
             characters += data.get('data', [])
-        
+
         # Search by park attractions
         if not characters:
             url = f"https://api.disneyapi.dev/character?parkAttractions={encoded_token}"
             response = requests.get(url)
             data = response.json()
             characters += data.get('data', [])
-        
+
         # Search by video games
         if not characters:
             url = f"https://api.disneyapi.dev/character?videoGames={encoded_token}"
             response = requests.get(url)
             data = response.json()
             characters += data.get('data', [])
-        
+
         # Search by films
         if not characters:
             url = f"https://api.disneyapi.dev/character?films={encoded_token}"
             response = requests.get(url)
             data = response.json()
             characters += data.get('data', [])
-    
+
     # Filter out non-dictionary items
     characters = [character for character in characters if isinstance(character, dict)]
 
@@ -325,5 +325,3 @@ def add_header(req):
     req.headers["Expires"] = "0"
     req.headers['Cache-Control'] = 'public, max-age=0'
     return req
-
-

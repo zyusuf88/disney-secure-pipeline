@@ -17,7 +17,7 @@ RUN pip install --upgrade pip setuptools wheel \
 COPY . .
 
 # --- Stage 2: Final image ---
-FROM python:3.11-slim  
+FROM python:3.11-slim
 
 WORKDIR /app
 

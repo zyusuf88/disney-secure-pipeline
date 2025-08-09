@@ -44,7 +44,7 @@ class EditUserForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
 
     password = PasswordField('New Password (optional)', validators=[Length(min=8, max=120, message="Password must be at least 8 characters long.")])
- 
+
 
 class AddFavoriteCharacterForm(FlaskForm):
     """Form for adding favorite characters."""

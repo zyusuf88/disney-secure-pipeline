@@ -24,6 +24,12 @@ jobs:
     outputs:
       image_tag: ${{ steps.set-tag.outputs.tag }}
 
+
+    permissions:
+      id-token: write
+      contents: read
+
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4

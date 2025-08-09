@@ -1,8 +1,8 @@
-<!-- 
+<!--
     This template extends the base.html and represents a Single Character Detail Page of the website.
-    
+
     The 'content' block includes an image of the character, character's name, and if user is authenticated, an option to favorite or unfavorite the character.
-    
+
     It also displays information about films, TV shows, video games, and park attractions the character is associated with. It also includes a button to go back to the Characters page.
 -->
 
@@ -22,8 +22,8 @@
                         <input type="hidden" id="favorite-characters" value="{{ favorite_characters }}">
                         <button id="favButton" type="button" class="btn btn-link text-danger p-0" data-url="{{ url_for('favorite_character', character_id=data._id) }}">
                             <i id="favorite-icon" class="{{ 'fas' if is_favorite else 'far' }} fa-heart"></i>
-                        </button>  
-                    {% endif %}                                 
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    
+
     {% if current_user.is_authenticated %}
         <script>
             window.onload = function() {

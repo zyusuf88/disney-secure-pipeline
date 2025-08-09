@@ -24,4 +24,3 @@ CREATE TABLE "favorite_character" (
 
 ALTER TABLE "User" ADD CONSTRAINT "fk_User_id" FOREIGN KEY("id")
 REFERENCES "Favorites" ("user_id");
- 
