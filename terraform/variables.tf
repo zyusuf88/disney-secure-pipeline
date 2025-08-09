@@ -241,7 +241,7 @@ variable "type" {
 
 variable "ttl" {
   description = "Time-to-live (TTL) for the DNS record "
-  type = number
+  type        = number
 
 }
 
@@ -432,14 +432,14 @@ variable "waf_scope" {
 variable "waf_rules" {
   description = "List of managed rule groups to associate with the WAF."
   type = list(object({
-    name                      = string
-    priority                  = number
-    override_action           = string
-    managed_rule_group_name   = string
-    vendor_name               = string
+    name                       = string
+    priority                   = number
+    override_action            = string
+    managed_rule_group_name    = string
+    vendor_name                = string
     cloudwatch_metrics_enabled = bool
-    metric_name               = string
-    sampled_requests_enabled  = bool
+    metric_name                = string
+    sampled_requests_enabled   = bool
   }))
 }
 

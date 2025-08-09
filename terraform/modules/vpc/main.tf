@@ -3,10 +3,10 @@ resource "aws_vpc" "this" {
   enable_dns_support   = var.enable_dns_support
   enable_dns_hostnames = var.enable_dns_hostnames
 
-  tags =  {
-      Name        = "${var.project_name}-vpc"
-      environment = var.environment
-    }
+  tags = {
+    Name        = "${var.project_name}-vpc"
+    environment = var.environment
+  }
 }
 
 
@@ -17,10 +17,10 @@ resource "aws_subnet" "public_1" {
   map_public_ip_on_launch = var.map_public_ip_on_launch
 
 
-  tags =  {
-      Name        = "${var.project_name}-public-subnet-1"
-      environment = var.environment
-    }
+  tags = {
+    Name        = "${var.project_name}-public-subnet-1"
+    environment = var.environment
+  }
 }
 
 resource "aws_subnet" "public_2" {
@@ -31,9 +31,9 @@ resource "aws_subnet" "public_2" {
 
 
   tags = {
-      Name        = "${var.project_name}-public-subnet-2"
-      environment = var.environment
-    }
+    Name        = "${var.project_name}-public-subnet-2"
+    environment = var.environment
+  }
 }
 
 resource "aws_internet_gateway" "this" {
@@ -56,9 +56,9 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-      Name        = "${var.project_name}-public-rt"
-      environment = var.environment
-    }
+    Name        = "${var.project_name}-public-rt"
+    environment = var.environment
+  }
 }
 
 resource "aws_route_table_association" "public_1" {

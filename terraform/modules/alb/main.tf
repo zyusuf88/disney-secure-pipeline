@@ -5,7 +5,7 @@ resource "aws_lb" "this" {
   internal           = var.alb_internal
   load_balancer_type = var.load_balancer_type
   security_groups    = [var.security_group_id]
-  subnets = var.subnet_ids
+  subnets            = var.subnet_ids
 
 
   drop_invalid_header_fields = var.drop_invalid_header_fields

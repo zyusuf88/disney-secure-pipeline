@@ -61,7 +61,7 @@ resource "aws_security_group" "this" {
     }
   }
 
-dynamic "egress" {
+  dynamic "egress" {
     for_each = var.egress_rules
     content {
       description = egress.value.description

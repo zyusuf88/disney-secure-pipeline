@@ -25,7 +25,7 @@ resource "aws_s3_bucket_policy" "alb_logs" {
         Principal = {
           AWS = "arn:aws:iam::${var.elb_log_delivery_account}:root"
         },
-        Action = "s3:PutObject",
+        Action   = "s3:PutObject",
         Resource = "${aws_s3_bucket.alb_logs.arn}/*"
       }
     ]
@@ -34,7 +34,7 @@ resource "aws_s3_bucket_policy" "alb_logs" {
 
 
 resource "aws_s3_bucket_public_access_block" "alb_logs" {
-  bucket = aws_s3_bucket.alb_logs.id
+  bucket                  = aws_s3_bucket.alb_logs.id
   block_public_acls       = var.block_public_acls
   block_public_policy     = var.block_public_policy
   ignore_public_acls      = var.ignore_public_acls

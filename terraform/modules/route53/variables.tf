@@ -27,6 +27,6 @@ variable "type" {
 
 variable "ttl" {
   description = "Time-to-live (TTL) for the DNS record "
-  type = number
+  type        = number
 
 }

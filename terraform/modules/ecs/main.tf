@@ -104,12 +104,12 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
-      name                 = var.container_name
-      image                = var.container_image
-      cpu                  = var.container_cpu
-      memory               = var.container_memory
-      memoryReservation    = var.container_memory_reservation
-      essential            = var.container_essential
+      name              = var.container_name
+      image             = var.container_image
+      cpu               = var.container_cpu
+      memory            = var.container_memory
+      memoryReservation = var.container_memory_reservation
+      essential         = var.container_essential
 
       portMappings = [
         {
