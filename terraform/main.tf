@@ -32,7 +32,7 @@ module "alb" {
   vpc_id            = module.vpc.vpc_id
   security_group_id = module.security.security_group_id
   certificate_arn   = module.acm.certificate_arn
-  project_name          = var.project_name 
+  project_name          = var.project_name
   environment         = var.environment
   subnet_ids          = module.vpc.subnet_ids
   alb_internal        = var.alb_internal

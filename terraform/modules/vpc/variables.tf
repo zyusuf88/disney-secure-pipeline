@@ -57,5 +57,3 @@ variable "default_route" {
   description = "Default route CIDR for public route table"
   type        = string
 }
-
-

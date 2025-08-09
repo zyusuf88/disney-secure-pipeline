@@ -91,7 +91,7 @@ variable "assign_public_ip" {
 
 variable "container_insights" {
   type        = string
- 
+
 }
 
 

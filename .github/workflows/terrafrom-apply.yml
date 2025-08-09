@@ -71,13 +71,13 @@ jobs:
           BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
         run: |
           aws s3 cp s3://${BUCKET_NAME}/tfplans/${ENV_NAME}-tfplan tfplan
-          
+
           if [ ! -f tfplan ]; then
             echo "::error::No terraform plan found for environment: $ENV_NAME"
             echo "Please run the Terraform Plan pipeline first."
             exit 1
           fi
-          
+
           echo "Successfully downloaded plan for $ENV_NAME"
 
 

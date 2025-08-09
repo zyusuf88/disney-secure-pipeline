@@ -109,7 +109,7 @@ jobs:
         role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-        
+
     - name: Create ECR Repository
       run: |
         aws ecr create-repository --repository-name ${{ github.event.inputs.ecr_repository }} || true

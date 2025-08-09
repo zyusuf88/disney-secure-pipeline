@@ -96,7 +96,7 @@ jobs:
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           PLAN_KEY="plans/${ENV_NAME}/tfplan-${TIMESTAMP}"
-          
+
           aws s3 cp tfplan s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/${PLAN_KEY}
-          
+
           echo "Plan uploaded to: s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/${PLAN_KEY}"

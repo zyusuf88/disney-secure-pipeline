@@ -42,4 +42,3 @@ variable "egress_rules" {
   }))
 
 }
-

@@ -99,13 +99,13 @@ jobs:
         run: |
           if aws s3 ls s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplans/${ENV_NAME}-tfplan; then
             aws s3 cp s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplans/${ENV_NAME}-tfplan tfplan
-            
+
             CONTAINER_IMAGE=$(terraform show -json tfplan | jq -r '.variables.container_image.value // empty')
-            
+
             if [ -n "$CONTAINER_IMAGE" ]; then
               REPO=$(echo "$CONTAINER_IMAGE" | cut -d'/' -f2 | cut -d':' -f1)
               TAG=$(echo "$CONTAINER_IMAGE" | cut -d':' -f2)
-              
+
               aws ecr batch-delete-image --repository-name $REPO --image-ids imageTag=$TAG || true
             fi
           fi

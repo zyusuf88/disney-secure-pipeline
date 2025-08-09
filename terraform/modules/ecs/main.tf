@@ -167,4 +167,3 @@ resource "aws_ecs_service" "this" {
     environment = var.environment
   }
 }
-
