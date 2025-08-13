@@ -54,8 +54,8 @@ jobs:
           tflint_version: latest
       - name: TFLint run
         run: |
-          tflint --init
-          tflint --config "${{ github.workspace }}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
+            tflint --init
+            tflint --config .tflint.hcl --recursive --format compact --minimum-failure-severity=error
 
       # (optional) quick security scan. remove this block if you want ultra-minimal
       - name: tfsec
