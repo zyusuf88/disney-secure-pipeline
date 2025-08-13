@@ -40,12 +40,7 @@ jobs:
 
       # --- format: check only tracked files so downloaded tfvars won't fail ---
       - name: Terraform fmt (tracked files only)
-        shell: bash
-        working-directory: .
-        run: |
-          set -euo pipefail
-          files="$(git ls-files '*.tf' '*.tf.json')"
-          [ -z "$files" ] || terraform fmt -check -diff $files
+        run: terraform fmt -recursive
 
       # --- TFLint ---
       - name: Set up TFLint
