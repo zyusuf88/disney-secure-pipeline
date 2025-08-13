@@ -18,11 +18,11 @@ module "vpc" {
 module "security" {
   source = "./modules/security"
 
-  project_name        = var.project_name
-  environment         = var.environment
-  vpc_id              = module.vpc.vpc_id
-  ingress_rules       = var.ingress_rules
-  egress_rules        = var.egress_rules
+  project_name  = var.project_name
+  environment   = var.environment
+  vpc_id        = module.vpc.vpc_id
+  ingress_rules = var.ingress_rules
+  egress_rules  = var.egress_rules
 
 }
 
@@ -76,9 +76,9 @@ module "alb" {
 
 
 module "ecs" {
-  source                       = "./modules/ecs"
-  project_name                 = var.project_name
-#  vpc_id                       = module.vpc.vpc_id
+  source       = "./modules/ecs"
+  project_name = var.project_name
+  #  vpc_id                       = module.vpc.vpc_id
   environment                  = var.environment
   subnet_ids                   = module.vpc.subnet_ids
   security_group_id            = module.security.security_group_id
@@ -115,14 +115,14 @@ module "ecs" {
 
 
 module "route53" {
-  source          = "./modules/route53"
-  domain_name     = var.domain_name
-  record_name     = var.record_name
-  alb_dns_name    = module.alb.alb_dns_name
+  source       = "./modules/route53"
+  domain_name  = var.domain_name
+  record_name  = var.record_name
+  alb_dns_name = module.alb.alb_dns_name
   # alb_zone_id     = module.alb.alb_zone_id
   # certificate_arn = module.acm.certificate_arn
-  ttl             = var.ttl
-  type            = var.type
+  ttl  = var.ttl
+  type = var.type
 }
 
 
