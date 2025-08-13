@@ -42,15 +42,19 @@ jobs:
       - name: Terraform fmt (tracked files only)
         run: terraform fmt -recursive
 
+
+
       # --- TFLint ---
       - name: Set up TFLint
         uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: latest
+
       - name: TFLint run
         run: |
-            tflint --init
-            tflint --config .tflint.hcl --recursive --format compact --minimum-failure-severity=error
+          tflint --init
+          tflint --config "${GITHUB_WORKSPACE}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
+
 
       # (optional) quick security scan. remove this block if you want ultra-minimal
       - name: tfsec
