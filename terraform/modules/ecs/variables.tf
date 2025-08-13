@@ -17,9 +17,9 @@ variable "subnet_ids" {
 }
 
 
-# variable "domain_name" {
-#   type = string
-# }
+variable "domain_name" {
+  type = string
+}
 
 # variable "vpc_id" {
 #   description = "VPC ID where the ALB will be deployed"

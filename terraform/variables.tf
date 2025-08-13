@@ -43,10 +43,10 @@ variable "public_subnet_2" {
   type        = string
 }
 
-variable "allowed_cidr_blocks" {
-  description = "List of CIDR blocks allowed to access the services"
-  type        = list(string)
-}
+# variable "allowed_cidr_blocks" {
+#   description = "List of CIDR blocks allowed to access the services"
+#   type        = list(string)
+# }
 
 variable "execution_role_arn" {
   description = "ARN of the ECS task execution role"
@@ -256,8 +256,12 @@ variable "ttl" {
 # }
 
 # variable "certificate_arn" {
-#   description = "ARN of the ACM SSL/TLS certificate for the HTTPS listener."
+#   description = "ARN of the ACM"
 #   type        = string
+# }
+
+# variable "alb_zone_id" {
+#   type = string
 # }
 
 variable "alb_internal" {

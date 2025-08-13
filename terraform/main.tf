@@ -21,9 +21,9 @@ module "security" {
   project_name        = var.project_name
   environment         = var.environment
   vpc_id              = module.vpc.vpc_id
-  allowed_cidr_blocks = var.allowed_cidr_blocks
   ingress_rules       = var.ingress_rules
   egress_rules        = var.egress_rules
+
 }
 
 
@@ -78,7 +78,7 @@ module "alb" {
 module "ecs" {
   source                       = "./modules/ecs"
   project_name                 = var.project_name
-  vpc_id                       = module.vpc.vpc_id
+#  vpc_id                       = module.vpc.vpc_id
   environment                  = var.environment
   subnet_ids                   = module.vpc.subnet_ids
   security_group_id            = module.security.security_group_id
