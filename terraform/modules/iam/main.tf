@@ -27,6 +27,19 @@
 #   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 # }
 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+terraform {
+  required_version = ">= 1.6, < 2.0"
+}
+
 
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "${var.project_name}-${var.environment}-ecs-task-execution-role"

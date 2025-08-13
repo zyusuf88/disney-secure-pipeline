@@ -17,9 +17,9 @@ variable "subnet_ids" {
 }
 
 
-variable "domain_name" {
-  type = string
-}
+# variable "domain_name" {
+#   type = string
+# }
 
 # variable "vpc_id" {
 #   description = "VPC ID where the ALB will be deployed"
@@ -75,6 +75,7 @@ variable "assign_public_ip" {
 
 variable "container_insights" {
   type = string
+  description = "Enable or disable ECS Container Insights (enabled|disabled)"
 
 }
 

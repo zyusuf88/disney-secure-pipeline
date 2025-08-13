@@ -31,6 +31,7 @@ variable "az_2" {
 
 variable "region" {
   type = string
+  description ="AWS region"
 }
 
 variable "public_subnet_1" {
@@ -55,6 +56,7 @@ variable "execution_role_arn" {
 
 variable "container_image" {
   type = string
+  description = "ECR image URL for the container"
 }
 
 variable "environment" {

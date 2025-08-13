@@ -85,7 +85,6 @@ module "ecs" {
   http_listener_arn            = module.alb.http_listener_arn
   https_listener_arn           = module.alb.https_listener_arn
   target_group_arn             = module.alb.target_group_arn
-  domain_name                  = var.domain_name
   execution_role_arn           = var.execution_role_arn
   container_image              = var.container_image
   deployment_controller_type   = var.deployment_controller_type

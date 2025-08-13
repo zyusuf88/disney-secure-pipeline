@@ -1,5 +1,6 @@
 variable "project_name" {
   type = string
+  description = "The subdomain or record name (e.g., tm)"
 }
 
 variable "environment" {
