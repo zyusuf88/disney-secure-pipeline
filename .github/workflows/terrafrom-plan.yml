@@ -104,5 +104,6 @@ jobs:
           path: terraform/tfplan
           retention-days: 1
 
-      - name: Upload plan to S3
-        run: aws s3 cp terraform/tfplan "s3://${BUCKET_NAME}/tfplans/${ENV_NAME}-tfplan"
+      - name: Upload Terraform Plan to s3
+        run: |
+          aws s3 cp tfplan s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan
