@@ -1,45 +1,70 @@
-name: Terraform Plan
+name: Terraform Plan (with checks)
 
 on:
   workflow_dispatch:
     inputs:
       container_image:
-        description: "Full ECR image URI (e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app:latest)"
+        description: "Full ECR image URI"
         required: true
         type: string
       env:
-        description: 'Environment (dev/prod)'
+        description: "Environment"
         required: true
         type: choice
-        options:
-          - 'dev'
-          - 'prod'
-        default: 'dev'
+        options: [dev, prod]
+        default: dev
 
 permissions:
   contents: read
   id-token: write
 
 jobs:
-  terraform_plan:
-    name: "Terraform Plan"
+  plan:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: ./terraform
-
     env:
       ENV_NAME: ${{ github.event.inputs.env }}
       BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-
-
 
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.x"
+
+      # --- format: check only tracked files so downloaded tfvars won't fail ---
+      - name: Terraform fmt (tracked files only)
+        shell: bash
+        working-directory: .
+        run: |
+          set -euo pipefail
+          files="$(git ls-files '*.tf' '*.tf.json')"
+          [ -z "$files" ] || terraform fmt -check -diff $files
+
+      # --- TFLint ---
+      - name: Set up TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+      - name: TFLint run
+        run: |
+          tflint --init
+          tflint --config "${{ github.workspace }}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
+
+      # (optional) quick security scan. remove this block if you want ultra-minimal
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          working_directory: terraform
+          soft_fail: false
+
+      # --- AWS + tfvars ---
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -47,62 +72,38 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download tfvars from S3
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
-          BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
         run: |
           mkdir -p env
-          aws s3 cp s3://${BUCKET_NAME}/env/${ENV_NAME}.tfvars env/${ENV_NAME}.tfvars
+          aws s3 cp "s3://${BUCKET_NAME}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.6.x"
-
-      - name: Terraform Init
+      # --- Terraform core ---
+      - name: Terraform init
         run: |
           terraform init -input=false \
             -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
             -backend-config="key=${{ github.event.inputs.env }}/terraform.tfstate" \
             -backend-config="region=${{ secrets.AWS_REGION }}"
 
-      - name: Select or Create Workspace
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
+      - name: Workspace select/create
         run: terraform workspace select -or-create=true "$ENV_NAME"
 
-      - name: Terraform Validate
+      - name: Terraform validate
         run: terraform validate
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Set up TFLint
-        uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: latest
-
-      - name: Initialize TFLint
-        run: tflint --init
-
-      - name: Run TFLint
-        run: tflint --config ../.tflint.hcl --recursive --format compact --minimum-failure-severity=error
-
-      - name: Terraform Plan
+      - name: Terraform plan
         env:
           TF_VAR_container_image: ${{ github.event.inputs.container_image }}
-          ENV_NAME: ${{ github.event.inputs.env }}
         run: |
           terraform plan -input=false \
             -var-file="env/${ENV_NAME}.tfvars" \
             -out=tfplan
 
-      - name: Upload Terraform Plan (artifact)
+      - name: Upload plan artifact
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: terraform/tfplan
           retention-days: 1
 
-      - name: Upload Plan to S3
+      - name: Upload plan to S3
         run: aws s3 cp terraform/tfplan "s3://${BUCKET_NAME}/tfplans/${ENV_NAME}-tfplan"
