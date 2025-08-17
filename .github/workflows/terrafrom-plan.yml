@@ -1,4 +1,4 @@
-name: 2) Terraform Plan with checks
+name: Terraform Plan (with checks)
 
 on:
   workflow_dispatch:
@@ -26,26 +26,17 @@ jobs:
         working-directory: ./terraform
     steps:
       - uses: actions/checkout@v4
-
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.x"
-
-      - name: Terraform fmt
-        run: terraform fmt -recursive
-
-      - name: Set up TFLint
-        uses: terraform-linters/setup-tflint@v4
+      - run: terraform fmt -recursive
+      - uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: latest
-
-      - name: TFLint run
-        run: |
+      - run: |
           tflint --init
           tflint --config "${GITHUB_WORKSPACE}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
-
-      - name: tfsec
-        uses: aquasecurity/tfsec-action@v1.0.0
+      - uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: terraform
           soft_fail: false
@@ -58,51 +49,29 @@ jobs:
         working-directory: ./terraform
     env:
       ENV_NAME: ${{ github.event.inputs.env }}
-      BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
           aws-region: ${{ secrets.AWS_REGION }}
-
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.x"
-
-      - name: Download tfvars
-        run: |
+      - run: |
           mkdir -p env
-          aws s3 cp "s3://${BUCKET_NAME}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
-
-      - name: Terraform init (remote backend)
-        run: |
-          terraform init -reconfigure -input=false \
-            -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
-            -backend-config="key=${{ github.event.inputs.env }}/terraform.tfstate" \
-            -backend-config="region=${{ secrets.AWS_REGION }}"
-
-      - name: Workspace select/create
-        run: terraform workspace select -or-create=true "$ENV_NAME"
-
-      - name: Terraform validate
-        run: terraform validate
-
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
+      - name: Terraform init
+        run: terraform init -reconfigure -input=false
+      - run: terraform workspace select -or-create=true "$ENV_NAME"
+      - run: terraform validate
       - name: Terraform plan
         env:
           TF_VAR_container_image: ${{ github.event.inputs.container_image }}
-        run: |
-          terraform plan -input=false \
-            -var-file="env/${ENV_NAME}.tfvars" \
-            -out=tfplan
-
-      - name: Upload plan artifact
-        uses: actions/upload-artifact@v4
+        run: terraform plan -input=false -var-file="env/${ENV_NAME}.tfvars" -out=tfplan
+      - uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: terraform/tfplan
           retention-days: 1
-
-      - name: Upload Terraform Plan to s3
-        run: aws s3 cp tfplan "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan"
+      - run: aws s3 cp tfplan "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan"
