@@ -49,7 +49,7 @@ tsconfig.dev.json
 # .tfstate files
 *.tfstate
 *.tfstate.*
-backend.tf
+
 # Crash log files
 crash.log
 crash.*.log

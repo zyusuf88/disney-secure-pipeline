@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: 4 )  Terraform Destroy
 
 on:
   workflow_dispatch:
@@ -34,6 +34,14 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+
+      - name: Download tfvars from S3
+        run: |
+          mkdir -p env
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" \
+                    "env/${{ github.event.inputs.env }}.tfvars"
+
       - run: |
           mkdir -p env
           aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" "env/${{ github.event.inputs.env }}.tfvars"
@@ -46,8 +54,10 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="workspace_key_prefix=env" \
             -backend-config="region=${{ secrets.AWS_REGION }}"
-      - run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
 
+
+      - name: Workspace select/create
+        run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
 
       - name: Terraform destroy
         run: terraform destroy -input=false -var-file="env/${{ github.event.inputs.env }}.tfvars" -auto-approve
