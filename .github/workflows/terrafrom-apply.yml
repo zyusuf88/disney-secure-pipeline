@@ -8,13 +8,11 @@ on:
         required: true
         type: string
       env:
-        description: 'Environment (dev/prod)'
+        description: "Environment"
         required: true
         type: choice
-        options:
-          - 'dev'
-          - 'prod'
-        default: 'dev'
+        options: [dev, prod]
+        default: dev
 
 permissions:
   contents: read
@@ -41,48 +39,31 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Download tfvars from S3
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
-          BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
         run: |
           mkdir -p env
-          aws s3 cp s3://${BUCKET_NAME}/env/${ENV_NAME}.tfvars env/${ENV_NAME}.tfvars
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" \
+                    "env/${{ github.event.inputs.env }}.tfvars"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.x"
 
-      - name: Terraform Init
+      - name: Terraform init
         run: |
           terraform init -input=false \
             -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
             -backend-config="key=${{ github.event.inputs.env }}/terraform.tfstate" \
             -backend-config="region=${{ secrets.AWS_REGION }}"
 
-      - name: Select or Create Workspace
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
-        run: terraform workspace select -or-create=true "$ENV_NAME"
+      - name: Workspace select/create
+        run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
 
-      - name: Download Plan from S3
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
-          BUCKET_NAME: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+      - name: Download plan from S3
         run: |
-          aws s3 cp s3://${BUCKET_NAME}/tfplans/${ENV_NAME}-tfplan tfplan
+          # Matches the Plan workflow's upload: s3://<bucket>/tfplan
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "tfplan"
+          test -f tfplan || { echo "::error::No terraform plan found. Run the Terraform Plan workflow first."; exit 1; }
 
-          if [ ! -f tfplan ]; then
-            echo "::error::No terraform plan found for environment: $ENV_NAME"
-            echo "Please run the Terraform Plan pipeline first."
-            exit 1
-          fi
-
-          echo "Successfully downloaded plan for $ENV_NAME"
-
-
-
-      - name: Terraform Apply
-        env:
-          ENV_NAME: ${{ github.event.inputs.env }}
+      - name: Terraform apply (using saved plan)
         run: terraform apply -input=false -auto-approve tfplan
