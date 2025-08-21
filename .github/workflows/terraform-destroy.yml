@@ -165,3 +165,25 @@ jobs:
           REPOSITORY=$(printf "%s" "$IMAGE" | cut -d'/' -f2- | cut -d'@' -f1 | cut -d':' -f1)
 
           aws ecr delete-repository --repository-name "$REPOSITORY" --force || true
+
+
+  cleanup_workspace:
+    runs-on: ubuntu-latest
+    needs: terraform_destroy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.6.x"
+
+      - name: Terraform init
+        run: terraform init -reconfigure -input=false
+
+      - name: Switch to default workspace
+        run: terraform workspace select default
+
+      - name: Delete Terraform workspace
+        run: |
+          echo "Deleting Terraform workspace: ${{ github.event.inputs.env }}"
+          terraform workspace delete "${{ github.event.inputs.env }}"
+        continue-on-error: true
