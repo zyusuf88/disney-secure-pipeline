@@ -88,6 +88,11 @@ on:
         description: 'Type "destroy" to confirm deletion of all resources'
         required: true
         type: string
+      env:
+        description: 'Environment (dev/prod)'
+        required: true
+        type: choice
+        options: [dev, prod]
       container_image:
         description: "Full ECR image URI (e.g. 123456.dkr.ecr.eu-west-1.amazonaws.com/app/service:tag or ...@sha256:...)"
         required: true
@@ -120,15 +125,13 @@ jobs:
       - name: Terraform init
         run: terraform init -reconfigure -input=false
 
-      - name: Select existing workspace
+      - name: Workspace select (fail if missing)
         run: |
-          WORKSPACE=$(cat .terraform/environment || echo "default")
-          echo "Destroying workspace: $WORKSPACE"
-          terraform workspace select "$WORKSPACE" || { echo "::error::Workspace $WORKSPACE does not exist"; exit 1; }
-          echo "WORKSPACE=$WORKSPACE" >> $GITHUB_ENV
+          terraform workspace select "${{ github.event.inputs.env }}" \
+          || { echo "::error::Workspace ${{ github.event.inputs.env }} does not exist"; exit 1; }
 
       - name: Terraform destroy
-        run: terraform destroy -input=false -var-file="env/$WORKSPACE.tfvars" -auto-approve
+        run: terraform destroy -input=false -var-file="env/${{ github.event.inputs.env }}.tfvars" -auto-approve
 
   delete_ecr_image:
     runs-on: ubuntu-latest
