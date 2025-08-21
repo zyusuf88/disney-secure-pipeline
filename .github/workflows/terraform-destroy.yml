@@ -122,10 +122,17 @@ jobs:
         with:
           terraform_version: "1.6.x"
 
+      - name: Download tfvars from S3
+        run: |
+          mkdir -p env
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" \
+                    "env/${{ github.event.inputs.env }}.tfvars"
+
+
       - name: Terraform init
         run: terraform init -reconfigure -input=false
 
-      - name: Workspace select (fail if missing)
+      - name: Workspace select - will fail if missing
         run: |
           terraform workspace select "${{ github.event.inputs.env }}" \
           || { echo "::error::Workspace ${{ github.event.inputs.env }} does not exist"; exit 1; }
