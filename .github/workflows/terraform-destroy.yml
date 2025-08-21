@@ -158,3 +158,10 @@ jobs:
             ID="imageTag=${IMAGE##*:}"
           fi
           aws ecr batch-delete-image --repository-name "$REPOSITORY" --image-ids "$ID"
+
+      - name: Delete ECR repository
+        run: |
+          IMAGE="${{ github.event.inputs.container_image }}"
+          REPOSITORY=$(printf "%s" "$IMAGE" | cut -d'/' -f2- | cut -d'@' -f1 | cut -d':' -f1)
+
+          aws ecr delete-repository --repository-name "$REPOSITORY" --force || true
