@@ -23,6 +23,7 @@ jobs:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     if: github.event.inputs.confirm_apply == 'apply'
+
     defaults:
       run:
         working-directory: ./terraform
@@ -35,17 +36,15 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Download tfvars from S3
+        run: |
+          mkdir -p env
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" \
+                    "env/${{ github.event.inputs.env }}.tfvars"
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.x"
-
-      # Optional (not strictly needed when applying a saved plan)
-      - name: Download tfvars from S3
-        run: |
-          mkdir -p workspace
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${{ github.event.inputs.env }}.tfvars" \
-                    "workspace/${{ github.event.inputs.env }}.tfvars"
-          ls -l workspace || true
 
       - name: Terraform init (remote backend)
         run: terraform init -reconfigure -input=false
@@ -53,10 +52,10 @@ jobs:
       - name: Workspace select/create
         run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
 
-      - name: Download plan from S3 (per-environment)
+      - name: Download plan from S3
         run: |
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/plans/${{ github.event.inputs.env }}/tfplan" "tfplan"
-          test -s tfplan || { echo "::error::No terraform plan found for ${{ github.event.inputs.env }}. Run the Plan workflow first."; exit 1; }
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "tfplan"
+          test -f tfplan || { echo "::error::No terraform plan found. Run the Terraform Plan workflow first."; exit 1; }
 
       - name: Terraform apply (using saved plan)
         run: terraform apply -input=false -auto-approve tfplan
