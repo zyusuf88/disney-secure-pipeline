@@ -55,7 +55,12 @@ jobs:
           || { echo "::error::Workspace ${{ github.event.inputs.env }} does not exist"; exit 1; }
 
       - name: Terraform destroy
+        env:
+          TF_VAR_container_image: ${{ github.event.inputs.container_image }}
         run: terraform destroy -input=false -var-file="env/${{ github.event.inputs.env }}.tfvars" -auto-approve
+
+
+
 
   cleanup_workspace:
     runs-on: ubuntu-latest
