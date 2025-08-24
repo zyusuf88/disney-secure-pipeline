@@ -1,4 +1,4 @@
-name: Terraform Plan (with checks)
+name: 1) Terraform Plan with checks
 
 on:
   workflow_dispatch:
@@ -59,16 +59,17 @@ jobs:
         with:
           terraform_version: "1.6.x"
       - run: |
-          mkdir -p env
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
+          mkdir -p workspace
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "workspace/${ENV_NAME}.tfvars"
       - name: Terraform init
         run: terraform init -reconfigure -input=false
       - run: terraform workspace select -or-create=true "$ENV_NAME"
       - run: terraform validate
       - name: Terraform plan
         env:
-          TF_VAR_container_image: ${{ github.event.inputs.container_image }}
-        run: terraform plan -input=false -var-file="env/${ENV_NAME}.tfvars" -out=tfplan
+         TF_VAR_container_image: ${{ github.event.inputs.container_image }}
+        run: terraform plan -input=false -var-file="workspace/${ENV_NAME}.tfvars" -out=tfplan
+
       - uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
