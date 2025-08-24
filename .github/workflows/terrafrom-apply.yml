@@ -52,10 +52,10 @@ jobs:
       - name: Workspace select/create
         run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
 
-      - name: Download plan from S3
-        run: |
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "tfplan"
-          test -f tfplan || { echo "::error::No terraform plan found. Run the Terraform Plan workflow first."; exit 1; }
+      - uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan-${{ github.event.inputs.env }}
+          path: terraform
 
       - name: Terraform apply (using saved plan)
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -input=false -auto-approve terraform/tfplan
