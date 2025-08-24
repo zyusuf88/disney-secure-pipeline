@@ -188,3 +188,5 @@ jobs:
           name: terraform-plan-${{ env.ENV_NAME }}
           path: terraform/tfplan
           retention-days: 1
+
+      - run: aws s3 cp tfplan "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan"

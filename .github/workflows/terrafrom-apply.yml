@@ -49,13 +49,12 @@ jobs:
       - name: Terraform init (remote backend)
         run: terraform init -reconfigure -input=false
 
-      - name: Workspace select/create
-        run: terraform workspace select -or-create=true "${{ github.event.inputs.env }}"
+      - name: Select workspace (must already exist)
+        run: terraform workspace select "${{ github.event.inputs.env }}"
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: terraform-plan-${{ github.event.inputs.env }}
-          path: terraform
+      - name: Download plan from S3
+        run: |
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "terraform/tfplan"
 
       - name: Terraform apply (using saved plan)
-        run: terraform apply -input=false -auto-approve terraform/tfplan
+        run: terraform apply -input=false -auto-approve tfplan
