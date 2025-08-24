@@ -54,7 +54,8 @@ jobs:
 
       - name: Download plan from S3
         run: |
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "terraform/tfplan"
+          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan" "tfplan"
+          test -f tfplan || { echo "::error::No terraform plan found. Run the Terraform Plan workflow first."; exit 1; }
 
       - name: Terraform apply (using saved plan)
         run: terraform apply -input=false -auto-approve tfplan
