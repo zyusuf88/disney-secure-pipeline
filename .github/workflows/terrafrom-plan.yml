@@ -1,3 +1,97 @@
+# name: 2) Terraform Plan with checks
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       container_image:
+#         description: "Full ECR image URI"
+#         required: true
+#         type: string
+#       env:
+#         description: "Environment"
+#         required: true
+#         type: choice
+#         options: [dev, prod]
+#         default: dev
+
+# permissions:
+#   contents: read
+#   id-token: write
+
+# jobs:
+#   checks:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./terraform
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: hashicorp/setup-terraform@v3
+#         with:
+#           terraform_version: "1.6.x"
+#       - run: terraform fmt -recursive
+#       - uses: terraform-linters/setup-tflint@v4
+#         with:
+#           tflint_version: latest
+#       - run: |
+#           tflint --init
+#           tflint --config "${GITHUB_WORKSPACE}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
+#       - uses: aquasecurity/tfsec-action@v1.0.0
+#         with:
+#           working_directory: terraform
+#           soft_fail: false
+
+#   plan:
+#     runs-on: ubuntu-latest
+#     needs: checks
+#     defaults:
+#       run:
+#         working-directory: ./terraform
+#     env:
+#       ENV_NAME: ${{ github.event.inputs.env }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+#       - uses: hashicorp/setup-terraform@v3
+#         with:
+#           terraform_version: "1.6.x"
+#       - run: |
+#           mkdir -p env
+#           aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
+#       - name: Terraform init
+#         run: terraform init -reconfigure -input=false
+
+
+#       - name: Clean up stale state (only if new env)
+#         run: |
+#           if ! terraform workspace list | grep -q "$ENV_NAME"; then
+#             KEY="env:/${ENV_NAME}/devsecops-pipeline/terraform.tfstate"
+#             aws s3 rm "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/$KEY" || true
+#             aws dynamodb delete-item \
+#               --table-name terraform-locks \
+#               --key "{\"LockID\":{\"S\":\"${{ secrets.TERRAFORM_STATE_BUCKET }}/$KEY-md5\"}}" || true
+#           else
+#             echo "Workspace $ENV_NAME already exists — skipping cleanup"
+#           fi
+
+#       - run: terraform workspace select -or-create=true "$ENV_NAME"
+#       - run: terraform validate
+#       - name: Terraform plan
+#         env:
+#           TF_VAR_container_image: ${{ github.event.inputs.container_image }}
+#         run: terraform plan -input=false -var-file="env/${ENV_NAME}.tfvars" -out=tfplan
+#       - uses: actions/upload-artifact@v4
+#         with:
+#           name: terraform-plan
+#           path: terraform/tfplan
+#           retention-days: 1
+#       - run: aws s3 cp tfplan "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan"
+
+
+
 name: 2) Terraform Plan with checks
 
 on:
@@ -31,15 +125,10 @@ jobs:
           terraform_version: "1.6.x"
       - run: terraform fmt -recursive
       - uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: latest
-      - run: |
-          tflint --init
-          tflint --config "${GITHUB_WORKSPACE}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
+      - run: tflint --config "${GITHUB_WORKSPACE}/.tflint.hcl" --recursive --format compact --minimum-failure-severity=error
       - uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: terraform
-          soft_fail: false
 
   plan:
     runs-on: ubuntu-latest
@@ -51,27 +140,46 @@ jobs:
       ENV_NAME: ${{ github.event.inputs.env }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_OIDC_ROLE_NAME }}
           aws-region: ${{ secrets.AWS_REGION }}
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.6.x"
-      - run: |
-          mkdir -p env
-          aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
+
+      - name: Download tfvars
+        run: aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
+
       - name: Terraform init
         run: terraform init -reconfigure -input=false
-      - run: terraform workspace select -or-create=true "$ENV_NAME"
+
+      - name: Clean up stale state (only if new env)
+        run: |
+          if ! terraform workspace list | grep -q "$ENV_NAME"; then
+            KEY="env:/${ENV_NAME}/devsecops-pipeline/terraform.tfstate"
+            aws s3 rm "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/$KEY" || true
+            aws dynamodb delete-item \
+              --table-name terraform-locks \
+              --key "{\"LockID\":{\"S\":\"${{ secrets.TERRAFORM_STATE_BUCKET }}/$KEY-md5\"}}" || true
+          else
+            echo "Workspace $ENV_NAME already exists — skipping cleanup"
+          fi
+
+      - name: Select or create workspace
+        run: terraform workspace select -or-create=true "$ENV_NAME"
+
       - run: terraform validate
+
       - name: Terraform plan
         env:
           TF_VAR_container_image: ${{ github.event.inputs.container_image }}
         run: terraform plan -input=false -var-file="env/${ENV_NAME}.tfvars" -out=tfplan
+
       - uses: actions/upload-artifact@v4
         with:
-          name: terraform-plan
+          name: terraform-plan-${{ env.ENV_NAME }}
           path: terraform/tfplan
           retention-days: 1
-      - run: aws s3 cp tfplan "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/tfplan"
