@@ -28,7 +28,7 @@
 #       - uses: actions/checkout@v4
 #       - uses: hashicorp/setup-terraform@v3
 #         with:
-#           terraform_version: "1.6.x"
+#           terraform_version: "1.11.2"
 #       - run: terraform fmt -recursive
 #       - uses: terraform-linters/setup-tflint@v4
 #         with:
@@ -57,7 +57,7 @@
 #           aws-region: ${{ secrets.AWS_REGION }}
 #       - uses: hashicorp/setup-terraform@v3
 #         with:
-#           terraform_version: "1.6.x"
+#           terraform_version: "1.11.2"
 #       - run: |
 #           mkdir -p env
 #           aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"
@@ -122,7 +122,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.6.x"
+          terraform_version: "1.11.2"
       - run: terraform fmt -recursive
       - uses: terraform-linters/setup-tflint@v4
         with:
@@ -153,7 +153,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.6.x"
+          terraform_version: "1.11.2"
 
       - name: Download tfvars
         run: aws s3 cp "s3://${{ secrets.TERRAFORM_STATE_BUCKET }}/env/${ENV_NAME}.tfvars" "env/${ENV_NAME}.tfvars"

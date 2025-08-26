@@ -38,7 +38,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.6.x"
+          terraform_version: "1.11.2"
 
       - name: Download tfvars from S3
         run: |
@@ -78,7 +78,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.6.x"
+          terraform_version: "1.11.2"
 
       - name: Terraform init (S3 backend)
         run: terraform init -reconfigure -input=false

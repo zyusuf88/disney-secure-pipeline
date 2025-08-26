@@ -44,7 +44,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.6.x"
+          terraform_version: "1.11.2"
 
       - name: Terraform init (remote backend)
         run: terraform init -reconfigure -input=false
