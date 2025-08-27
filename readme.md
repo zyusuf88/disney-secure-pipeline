@@ -13,39 +13,31 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ---
 
-##tree
+## Project breakdown
 
 ```bash
-
 .
-├── TEST.md
-├── readme.md
-├── app/                  # Flask application
-│   ├── app.py
-│   ├── dockerfile
-│   ├── requirements.txt
-│   ├── forms.py, models.py, seed.py
-│   ├── db-schema.sql
-│   ├── templates/        # HTML templates (login, register, characters, etc.)
-│   ├── static/           # CSS, images, logos
-│   └── test_app.py
+├── app/
+│   ├── app.py, dockerfile, requirements.txt
+│   ├── forms.py, models.py, seed.py, db-schema.sql
+│   ├── templates/
+│   └── static/
 │
-├── terraform/            # Infrastructure as Code
-│   ├── backend.tf
-│   ├── main.tf
-│   ├── provider.tf
+├── terraform/
+│   ├── backend.tf, main.tf, provider.tf
 │   ├── variables.tf, outputs.tf, terraform.tfvars
-│   ├── env/              # Environment configs (dev/prod tfvars)
-│   └── modules/          # Modularised infra (vpc, ecs, alb, waf, iam, route53, security, acm)
+│   ├── env/
+│   │   ├── dev.tfvars    # dev environment (not committed)
+│   │   └── prod.tfvars   # prod environment (not committed)
+│   └── modules/          # vpc, ecs, alb, waf, iam, route53, security, acm
 │
-└── .github/workflows/    # CI/CD pipelines
+└── .github/workflows/
     ├── build-and-push-to-ecr.yml
     ├── terraform-plan.yml
     ├── terraform-apply.yml
     └── terraform-destroy.yml
 
-
-````
+```
 
 
 ## Architecture at a Glance

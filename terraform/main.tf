@@ -5,6 +5,8 @@ module "vpc" {
   vpc_cidr                = var.vpc_cidr
   public_subnet_1         = var.public_subnet_1
   public_subnet_2         = var.public_subnet_2
+  private_subnet_1         = var.private_subnet_1
+  private_subnet_2         = var.private_subnet_2
   az_1                    = var.az_1
   az_2                    = var.az_2
   environment             = var.environment
@@ -21,8 +23,9 @@ module "security" {
   project_name  = var.project_name
   environment   = var.environment
   vpc_id        = module.vpc.vpc_id
-  ingress_rules = var.ingress_rules
-  egress_rules  = var.egress_rules
+  container_port = var.container_port
+  alb_ingress_rules = var.alb_ingress_rules
+  egress_rules      = var.egress_rules
 
 }
 
@@ -30,11 +33,11 @@ module "security" {
 module "alb" {
   source                           = "./modules/alb"
   vpc_id                           = module.vpc.vpc_id
-  security_group_id                = module.security.security_group_id
+  public_subnet_ids = module.vpc.public_subnet_ids # pass PUBLIC subnets here
+  security_groups   = [module.security.sg_alb_id]
   certificate_arn                  = module.acm.certificate_arn
   project_name                     = var.project_name
   environment                      = var.environment
-  subnet_ids                       = module.vpc.subnet_ids
   alb_internal                     = var.alb_internal
   load_balancer_type               = var.load_balancer_type
   drop_invalid_header_fields       = var.drop_invalid_header_fields
@@ -78,10 +81,9 @@ module "alb" {
 module "ecs" {
   source       = "./modules/ecs"
   project_name = var.project_name
-  #  vpc_id                       = module.vpc.vpc_id
   environment                  = var.environment
-  subnet_ids                   = module.vpc.subnet_ids
-  security_group_id            = module.security.security_group_id
+  private_subnet_ids    = module.vpc.private_subnet_ids
+  ecs_security_group_id = module.security.sg_ecs_id
   http_listener_arn            = module.alb.http_listener_arn
   https_listener_arn           = module.alb.https_listener_arn
   target_group_arn             = module.alb.target_group_arn

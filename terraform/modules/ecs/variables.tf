@@ -6,14 +6,24 @@ variable "execution_role_arn" {
 
 
 
-variable "security_group_id" {
-  description = "Security group for ECS service"
-  type        = string
+# variable "security_group_id" {
+#   description = "Security group for ECS service"
+#   type        = string
+# }
+
+# variable "subnet_ids" {
+#   description = "List of public subnet IDs for ALB and ECS"
+#   type        = list(string)
+# }
+
+variable "private_subnet_ids" {
+  description = "Private subnet IDs where ECS tasks should run"
+  type        = list(string)
 }
 
-variable "subnet_ids" {
-  description = "List of public subnet IDs for ALB and ECS"
-  type        = list(string)
+variable "ecs_security_group_id" {
+  description = "Security group ID to attach to ECS tasks/services"
+  type        = string
 }
 
 

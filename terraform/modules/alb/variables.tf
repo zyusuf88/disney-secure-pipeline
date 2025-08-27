@@ -13,15 +13,20 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet_ids" {
-  description = "list of subnet IDs where the ALB will be deployed."
+# variable "subnet_ids" {
+#   description = "list of subnet IDs where the ALB will be deployed."
+#   type        = list(string)
+# }
+
+variable "public_subnet_ids" {
+  description = "PUBLIC subnet IDs for the internet-facing ALB (>=2)"
   type        = list(string)
 }
 
 
-variable "security_group_id" {
-  description = "Security group ID to associate with the ALB."
-  type        = string
+variable "security_groups" {
+  description = "Security groups to attach to the ALB"
+  type        = list(string)
 }
 
 variable "certificate_arn" {

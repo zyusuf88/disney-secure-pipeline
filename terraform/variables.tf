@@ -44,6 +44,18 @@ variable "public_subnet_2" {
   type        = string
 }
 
+variable "private_subnet_1" {
+  description = "CIDR block for first private subnet"
+  type        = string
+}
+
+variable "private_subnet_2" {
+  description = "CIDR block for second private subnet"
+  type        = string
+}
+
+
+
 # variable "allowed_cidr_blocks" {
 #   description = "List of CIDR blocks allowed to access the services"
 #   type        = list(string)
@@ -81,16 +93,17 @@ variable "map_public_ip_on_launch" {
 }
 
 
-variable "ingress_rules" {
-  description = "ingress rules for security group"
+variable "alb_ingress_rules" {
+  description = "List of ingress rules for the ALB SG"
   type = list(object({
-    description = string
+    description = optional(string)
     from_port   = number
     to_port     = number
     protocol    = string
     cidr_blocks = list(string)
   }))
 }
+
 
 variable "egress_rules" {
   description = "List of egress rules for the security group"

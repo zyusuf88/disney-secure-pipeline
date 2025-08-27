@@ -20,10 +20,38 @@ variable "environment" {
 }
 
 
-variable "ingress_rules" {
-  description = "ingress rules for security group"
+# variable "ingress_rules" {
+#   description = "ingress rules for security group"
+#   type = list(object({
+#     description = string
+#     from_port   = number
+#     to_port     = number
+#     protocol    = string
+#     cidr_blocks = list(string)
+#   }))
+# }
+
+# variable "egress_rules" {
+#   description = "List of egress rules for the security group"
+#   type = list(object({
+#     description = string
+#     from_port   = number
+#     to_port     = number
+#     protocol    = string
+#     cidr_blocks = list(string)
+#   }))
+
+# }
+
+variable "container_port" {
+  type        = number
+  description = "Container listening port"
+}
+
+variable "alb_ingress_rules" {
+  description = "List of ingress rules for the ALB SG"
   type = list(object({
-    description = string
+    description = optional(string)
     from_port   = number
     to_port     = number
     protocol    = string
@@ -32,13 +60,12 @@ variable "ingress_rules" {
 }
 
 variable "egress_rules" {
-  description = "List of egress rules for the security group"
+  description = "List of egress rules (used by both SGs)"
   type = list(object({
-    description = string
+    description = optional(string)
     from_port   = number
     to_port     = number
     protocol    = string
     cidr_blocks = list(string)
   }))
-
 }

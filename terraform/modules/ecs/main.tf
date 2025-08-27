@@ -156,11 +156,17 @@ resource "aws_ecs_service" "this" {
   desired_count   = var.desired_count
   launch_type     = var.launch_type
 
+  # network_configuration {
+  #   assign_public_ip = var.assign_public_ip
+  #   subnets          = var.subnet_ids
+  #   security_groups  = [var.security_group_id]
+  # }
+
   network_configuration {
-    assign_public_ip = var.assign_public_ip
-    subnets          = var.subnet_ids
-    security_groups  = [var.security_group_id]
-  }
+  subnets          = var.private_subnet_ids
+  security_groups  = [var.ecs_security_group_id]
+  assign_public_ip = var.assign_public_ip
+}
 
   load_balancer {
     target_group_arn = var.target_group_arn
