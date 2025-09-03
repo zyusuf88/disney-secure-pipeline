@@ -72,7 +72,7 @@ resource "aws_security_group" "alb" {
       from_port   = ingress.value.from_port
       to_port     = ingress.value.to_port
       protocol    = ingress.value.protocol
-      cidr_blocks = [var.vpc_cidr]
+      cidr_blocks = ingress.value.cidr_blocks
     }
   }
 
@@ -84,7 +84,7 @@ resource "aws_security_group" "alb" {
       from_port   = egress.value.from_port
       to_port     = egress.value.to_port
       protocol    = egress.value.protocol
-      cidr_blocks = [var.vpc_cidr]
+      cidr_blocks = egress.value.cidr_blocks
     }
   }
 
@@ -100,10 +100,7 @@ resource "aws_security_group" "ecs" {
   description = "ECS tasks (only app port from ALB)"
   vpc_id      = var.vpc_id
 
-  # No cidr-based ingress rules here (keeps it locked down).
-  # We add a separate, clear rule referencing the ALB SG below.
 
-  # Egress from tfvars (usually all)
   dynamic "egress" {
     for_each = var.egress_rules
     content {
@@ -111,7 +108,7 @@ resource "aws_security_group" "ecs" {
       from_port   = egress.value.from_port
       to_port     = egress.value.to_port
       protocol    = egress.value.protocol
-      cidr_blocks = [var.vpc_cidr]
+      cidr_blocks = egress.value.cidr_blocks
     }
   }
 
