@@ -1,4 +1,4 @@
-# Stage 1: Build
+
 FROM python:3.11-slim AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -17,9 +17,8 @@ RUN pip install --upgrade pip setuptools wheel \
 
 COPY . .
 
-#Stage 2: Distroless runtime
+# final image
 FROM gcr.io/distroless/python3-debian12:nonroot
-
 WORKDIR /app
 
 ENV FLASK_APP=app.py

@@ -1,16 +1,12 @@
 terraform {
+  required_version = ">= 1.11.2, < 2.0.0"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 6.0"
     }
   }
 }
-
-terraform {
-  required_version = ">= 1.6, < 2.0"
-}
-
 
 
 data "aws_route53_zone" "this" {

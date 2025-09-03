@@ -13,6 +13,10 @@ variable "vpc_id" {
 #   type        = list(string)
 # }
 
+variable "vpc_cidr" {
+  description = "CIDR block for VPC"
+  type        = string
+}
 
 variable "environment" {
   description = "Deployment environment (dev, prod)"

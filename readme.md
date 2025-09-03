@@ -13,6 +13,10 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ---
 
+## Architecture
+![architecture diagram](./architecture%20diagram/Arch%20diagram.png)
+
+
 ## Project breakdown
 
 ```bash
@@ -27,8 +31,8 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 │   ├── backend.tf, main.tf, provider.tf
 │   ├── variables.tf, outputs.tf, terraform.tfvars
 │   ├── env/
-│   │   ├── dev.tfvars    # dev environment (not committed)
-│   │   └── prod.tfvars   # prod environment (not committed)
+│   │   ├── dev.tfvars    # dev env (not committ
+│   │   └── prod.tfvars   # prod env (not committed)
 │   └── modules/          # vpc, ecs, alb, waf, iam, route53, security, acm
 │
 └── .github/workflows/
@@ -39,9 +43,11 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ```
 
+### Certificate Validation
+<img width="1249" height="578" alt="Image" src="https://github.com/user-attachments/assets/c717882f-23e4-409a-9ff3-d486ecf8f38e" />
 
-## Architecture at a Glance
-*(Pop your architecture diagram here)*
+>  `disney.yzeynab.com` secured with ACM TLS/SSL → HTTPS enforced
+
 
 - **Flask backend** containerised via Docker
 - **AWS ECS (Fargate)** handling deployment
@@ -76,15 +82,3 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 - All wired up using modular Terraform for clean reusability
 
 ---
-
-## Highlights (No Exhaustive Lists—Just the Good Stuff)
-
-- **Dockerised** with a slim Python 3.12 base
-- Infrastructure defined via Terraform modules—flexible, reusable
-- Secure CI/CD using **GitHub Actions + OIDC**, no long-lived credentials
-- Key AWS components: ALB, WAF, VPC, DynamoDB, Route53, IAM roles, CloudWatch logs & metrics
-- Terraform plan reveals the creation of: VPC, public subnets, Internet Gateway, ALB (with HTTP redirect), HTTPS listener, target group, WAF ACL, ECS service & task definition, Route 53 record, S3 bucket (ALB logs), IAM roles, and security groups tagged cleanly
-
----
-
-## Project Tree (Condensed Version)

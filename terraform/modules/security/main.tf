@@ -46,6 +46,18 @@
 # - ECS SG: NO world-open rules; app port allowed ONLY from ALB SG
 ########################################
 
+
+
+terraform {
+  required_version = ">= 1.11.2, < 2.0.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+  }
+}
+
 # ---------- ALB Security Group ----------
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-${var.environment}-alb-sg"
@@ -60,7 +72,7 @@ resource "aws_security_group" "alb" {
       from_port   = ingress.value.from_port
       to_port     = ingress.value.to_port
       protocol    = ingress.value.protocol
-      cidr_blocks = ingress.value.cidr_blocks
+      cidr_blocks = [var.vpc_cidr]
     }
   }
 
@@ -72,7 +84,7 @@ resource "aws_security_group" "alb" {
       from_port   = egress.value.from_port
       to_port     = egress.value.to_port
       protocol    = egress.value.protocol
-      cidr_blocks = egress.value.cidr_blocks
+      cidr_blocks = [var.vpc_cidr]
     }
   }
 
@@ -99,7 +111,7 @@ resource "aws_security_group" "ecs" {
       from_port   = egress.value.from_port
       to_port     = egress.value.to_port
       protocol    = egress.value.protocol
-      cidr_blocks = egress.value.cidr_blocks
+      cidr_blocks = [var.vpc_cidr]
     }
   }
 

@@ -26,6 +26,7 @@ module "security" {
   container_port = var.container_port
   alb_ingress_rules = var.alb_ingress_rules
   egress_rules      = var.egress_rules
+  vpc_cidr                = var.vpc_cidr
 
 }
 
