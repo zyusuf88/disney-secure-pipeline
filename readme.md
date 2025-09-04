@@ -1,8 +1,9 @@
 # Disney Secure Delivery
+[![1) Build and Push to ECR](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/build-and-push-to-ecr.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/build-and-push-to-ecr.yml) [![2) Terraform Plan with checks](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-plan.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-plan.yml) [![3) Terraform Apply](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-apply.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-apply.yml) [![4) Terraform Destroy](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terraform-destroy.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terraform-destroy.yml)
 
 **Disney Secure Delivery** is a production-ready, containerised application deployed securely on AWS.
 
-The base application was cloned from [hollyabrams/capstone-project-1](https://github.com/hollyabrams/capstone-project-1) and re-engineered to run as a **cloud-native service** using Docker, ECS Fargate, and Terraform. It leverages **CI/CD automation, strong security controls, and scalable AWS infrastructure**.
+The base application was cloned from [hollyabrams/capstone-project-1](https://github.com/hollyabrams/capstone-project-1) and re-engineered to run as a **cloud-native service** using Docker, ECS Fargate and Terraform. It leverages **CI/CD automation, strong security controls, and scalable AWS infrastructure**.
 
 The backend uses **Amazon DynamoDB** for persistence. The application is fronted by an **Application Load Balancer (ALB)**, protected with **AWS WAF**, and routed via **Route53**. Infrastructure is managed with **Terraform modules**, and all deployments run through **GitHub Actions workflows** with OIDC authentication.
 
@@ -10,7 +11,7 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ## Demo
 
-
+![disney-app-demo](./assets/disney-app.gif)
 ---
 
 ## Architecture
@@ -77,16 +78,18 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 - Terraform plan reveals the creation of: VPC, public subnets, Internet Gateway, ALB (with HTTP redirect), HTTPS listener, target group, WAF ACL, ECS service & task definition, Route 53 record, S3 bucket (ALB logs), IAM roles, and security groups tagged cleanly
 ---
 
-## Architecture at a Glance
-*(Pop your architecture diagram here)*
 
-- **Flask backend** containerised via Docker
-- **AWS ECS (Fargate)** handling deployment
-- **ALB** with redirect from HTTP → secure HTTPS (via ACM certificate)
-- **WAF** shields the app with AWS-managed rules
-- Data persists in **DynamoDB**
-- DNS handled via **Route 53**
-- Access logs land in **S3**, metrics in **CloudWatch**
-- All wired up using modular Terraform for clean reusability
+### Local Development (Dockerised)
 
----
+Run the application inside a container:
+
+```bash
+# Build the Docker image
+docker build -t disney-secure-delivery .
+
+# Run the container
+docker run -p 5000:5000 disney-secure-delivery
+````
+
+The app will be available at http://localhost:5000
+.
