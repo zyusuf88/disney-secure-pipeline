@@ -4,18 +4,6 @@ variable "execution_role_arn" {
   type        = string
 }
 
-
-
-# variable "security_group_id" {
-#   description = "Security group for ECS service"
-#   type        = string
-# }
-
-# variable "subnet_ids" {
-#   description = "List of public subnet IDs for ALB and ECS"
-#   type        = list(string)
-# }
-
 variable "private_subnet_ids" {
   description = "Private subnet IDs where ECS tasks should run"
   type        = list(string)
@@ -25,16 +13,6 @@ variable "ecs_security_group_id" {
   description = "Security group ID to attach to ECS tasks/services"
   type        = string
 }
-
-
-# variable "domain_name" {
-#   type = string
-# }
-
-# variable "vpc_id" {
-#   description = "VPC ID where the ALB will be deployed"
-#   type        = string
-# }
 
 variable "project_name" {
   description = "Project name prefix"
@@ -89,7 +67,6 @@ variable "container_insights" {
 
 }
 
-
 variable "network_mode" {
   type        = string
   description = "ECS network mode (e.g., awsvpc, bridge)"
@@ -105,8 +82,6 @@ variable "task_role_arn" {
   description = "IAM Task Role ARN for ECS task permissions"
 }
 
-
-
 variable "task_cpu" {
   type        = number
   description = "CPU units for ECS task"
@@ -116,7 +91,6 @@ variable "task_memory" {
   type        = number
   description = "Memory in MB for ECS task"
 }
-
 
 variable "container_name" {
   type        = string

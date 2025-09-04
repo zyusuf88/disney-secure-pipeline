@@ -8,12 +8,6 @@ terraform {
   }
 }
 
-# resource "aws_lb" "this" {
-#   name               = "${var.project_name}-${var.environment}-alb"
-#   internal           = var.alb_internal
-#   load_balancer_type = var.load_balancer_type
-#   security_groups    = [var.security_group_id]
-#   subnets            = var.subnet_ids
 
 resource "aws_lb" "this" {
   name               = "${var.project_name}-${var.environment}-alb"

@@ -34,7 +34,7 @@ module "security" {
 module "alb" {
   source                           = "./modules/alb"
   vpc_id                           = module.vpc.vpc_id
-  public_subnet_ids = module.vpc.public_subnet_ids # pass PUBLIC subnets here
+  public_subnet_ids = module.vpc.public_subnet_ids
   security_groups   = [module.security.sg_alb_id]
   certificate_arn                  = module.acm.certificate_arn
   project_name                     = var.project_name
@@ -121,8 +121,6 @@ module "route53" {
   domain_name  = var.domain_name
   record_name  = var.record_name
   alb_dns_name = module.alb.alb_dns_name
-  # alb_zone_id     = module.alb.alb_zone_id
-  # certificate_arn = module.acm.certificate_arn
   ttl  = var.ttl
   type = var.type
 }

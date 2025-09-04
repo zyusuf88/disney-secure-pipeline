@@ -8,11 +8,6 @@ variable "vpc_id" {
   type        = string
 }
 
-# variable "allowed_cidr_blocks" {
-#   description = "List of CIDR blocks allowed to access the services"
-#   type        = list(string)
-# }
-
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
   type        = string
@@ -23,29 +18,6 @@ variable "environment" {
   type        = string
 }
 
-
-# variable "ingress_rules" {
-#   description = "ingress rules for security group"
-#   type = list(object({
-#     description = string
-#     from_port   = number
-#     to_port     = number
-#     protocol    = string
-#     cidr_blocks = list(string)
-#   }))
-# }
-
-# variable "egress_rules" {
-#   description = "List of egress rules for the security group"
-#   type = list(object({
-#     description = string
-#     from_port   = number
-#     to_port     = number
-#     protocol    = string
-#     cidr_blocks = list(string)
-#   }))
-
-# }
 
 variable "container_port" {
   type        = number

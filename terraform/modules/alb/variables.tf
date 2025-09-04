@@ -13,11 +13,6 @@ variable "vpc_id" {
   type        = string
 }
 
-# variable "subnet_ids" {
-#   description = "list of subnet IDs where the ALB will be deployed."
-#   type        = list(string)
-# }
-
 variable "public_subnet_ids" {
   description = "PUBLIC subnet IDs for the internet-facing ALB (>=2)"
   type        = list(string)
@@ -150,7 +145,6 @@ variable "ssl_policy" {
   type        = string
 }
 
-
 variable "http_redirect_action_type" {
   description = "Default action type for HTTP listener (typically 'redirect')."
   type        = string
@@ -170,8 +164,6 @@ variable "http_redirect_status_code" {
   description = "HTTP status code used for the redirect action (e.g., HTTP_301 or HTTP_302)."
   type        = string
 }
-
-
 
 variable "force_destroy" {
   description = "Whether to allow the S3 bucket to be forcibly destroyed even if it contains objects."
@@ -198,13 +190,10 @@ variable "restrict_public_buckets" {
   type        = bool
 }
 
-
-
 variable "waf_scope" {
   description = "Scope of the WAF (REGIONAL for ALB, CLOUDFRONT for global)."
   type        = string
 }
-
 
 variable "waf_rules" {
   description = "List of managed rule groups to associate with the WAF."

@@ -1,5 +1,3 @@
-
-
 resource "aws_s3_bucket" "alb_logs" {
   bucket        = "${var.project_name}-${var.environment}-alb-logs-${data.aws_caller_identity.current.account_id}"
   force_destroy = var.force_destroy

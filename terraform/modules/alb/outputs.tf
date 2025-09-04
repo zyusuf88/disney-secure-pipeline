@@ -27,8 +27,3 @@ output "https_listener" {
   value       = aws_lb_listener.https_listener
   description = "The HTTPS listener resource for the Application Load Balancer"
 }
-
-# output "public_subnet_ids" {
-#   description = "IDs of the public subnets"
-#   value       = [aws_subnet.public_1.id, aws_subnet.public_2.id]
-# }
