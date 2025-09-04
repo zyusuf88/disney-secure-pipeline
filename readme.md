@@ -15,7 +15,7 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 ---
 
 ## Architecture
-![architecture diagram](./architecture%20diagram/Arch%20diagram.png)
+![architecture diagram](./assets/Arch%20diagram.png)
 
 - **Flask backend** containerised via Docker
 - **AWS ECS (Fargate)** handling deployment
