@@ -13,7 +13,7 @@ on:
         default: 'node-app'
         type: string
       image_tag:
-        description: 'Image tag (e.g., latest, v1.0.0, staging) - if left blank, a tag will be assigned'
+        description: 'Image tag'
         required: false
         type: string
 

@@ -9,13 +9,21 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 ---
 
 ## Demo
-*(Insert your app GIF here for instant impact)*# Disney Secure Delivery 🎬🔐
+
 
 ---
 
 ## Architecture
 ![architecture diagram](./architecture%20diagram/Arch%20diagram.png)
 
+- **Flask backend** containerised via Docker
+- **AWS ECS (Fargate)** handling deployment
+- **ALB** with redirect from HTTP → secure HTTPS (via ACM certificate)
+- **WAF** shields the app with AWS-managed rules
+- Data persists in **DynamoDB**
+- DNS handled via **Route 53**
+- Access logs land in **S3**, metrics in **CloudWatch**
+- All wired up using modular Terraform for clean reusability
 
 ## Project breakdown
 
