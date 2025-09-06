@@ -11,7 +11,8 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ## Demo
 
-[![disney-app ](https://github.com/user-attachments/assets/656b0779-9f0b-4b3e-944f-92027cab2560)]
+https://github.com/user-attachments/assets/656b0779-9f0b-4b3e-944f-92027cab2560
+
 ---
 
 ## Architecture
@@ -93,3 +94,4 @@ docker run -p 5000:5000 disney-secure-delivery
 
 The app will be available at http://localhost:5000
 .
+
