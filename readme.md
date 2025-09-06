@@ -11,7 +11,7 @@ The backend uses **Amazon DynamoDB** for persistence. The application is fronted
 
 ## Demo
 
-https://github.com/user-attachments/assets/656b0779-9f0b-4b3e-944f-92027cab2560
+[![disney-app ](https://github.com/user-attachments/assets/656b0779-9f0b-4b3e-944f-92027cab2560)]
 ---
 
 ## Architecture
