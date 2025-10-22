@@ -1,5 +1,4 @@
 # Disney Secure Delivery
-[![1) Build and Push to ECR](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/build-and-push-to-ecr.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/build-and-push-to-ecr.yml) [![2) Terraform Plan with checks](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-plan.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-plan.yml) [![3) Terraform Apply](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-apply.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terrafrom-apply.yml) [![4) Terraform Destroy](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terraform-destroy.yml/badge.svg)](https://github.com/zyusuf88/disney-secure-delivery/actions/workflows/terraform-destroy.yml)
 
 **Disney Secure Delivery** is a production-ready, containerised application deployed securely on AWS.
 
@@ -54,7 +53,7 @@ https://github.com/user-attachments/assets/656b0779-9f0b-4b3e-944f-92027cab2560
 ```
 
 ### Certificate Validation
-<img width="1249" height="578" alt="Image" src="https://github.com/user-attachments/assets/c717882f-23e4-409a-9ff3-d486ecf8f38e" />
+![Certificate Validation](assets/cert-validation.png)
 
 >  `disney.yzeynab.com` secured with ACM TLS/SSL → HTTPS enforced
 
